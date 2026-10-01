@@ -1,0 +1,1205 @@
+{
+  "info": {
+    "_postman_id": "7ca92462-042e-4506-a779-220cd1c0224a",
+    "name": "ShopEase E-Commerce API - QA",
+    "description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58010270",
+    "_collection_link": "https://go.postman.co/collection/58010270-7ca92462-042e-4506-a779-220cd1c0224a?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "01- Authentication",
+      "item": [
+        {
+          "name": "TC-01 - Valid Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const loginResponse = pm.response.json();\n\npm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Token is present\", function () {\n    pm.expect(loginResponse.token).to.exist;\n});\n\npm.test(\"User email is correct\", function () {\n    pm.expect(loginResponse.user.email)\n        .to.eql(\"sagar@example.com\");\n});\n\npm.environment.set(\"authToken\", loginResponse.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"sagar@example.com\",\r\n  \"password\": \"Password@123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/auth/login",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-02 - Invalid password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {\n    pm.response.to.have.status(401);\n});\n\npm.test(\"Response with correct error message\", function(){\n    const responseBody = pm.response.json();\n    pm.expect(responseBody.message).to.eql(\"The request contains invalid data.\");\n});\n\npm.test(\"Response with correct code\", function(){\n    const responseBody = pm.response.json();\n    pm.expect(responseBody.code).to.eql(\"INVALID_REQUEST\");\n});\n\npm.test(\"Response with correct details\", function(){\n    const responseBody = pm.response.json();\n    pm.expect(responseBody.details).to.eql([\"Invalid email or password\"]);\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"sagar@example.com\",\r\n  \"password\": \"Wrong@123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/auth/login",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-03 - Invalid email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {\n    pm.response.to.have.status(401);\n});\n\npm.test(\"Response with correct message\",function(){\n    const responseBody = pm.response.json();\n    pm.expect(responseBody.message).to.have.eql(\"The request contains invalid data.\")\n})\n\npm.test(\"Response with correct details\", function(){\n    const responseBody = pm.response.json();\n    pm.expect(responseBody.details).to.eql([\"Invalid email or password\"]);\n});\n\npm.test(\"Response with correct code\", function(){\n    const responseBody = pm.response.json();\n    pm.expect(responseBody.code).to.eql(\"INVALID_REQUEST\");\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"test@example.com\",\r\n  \"password\": \"Password@123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/auth/login",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-04 - Missing Email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\n    pm.response.to.have.status(400);\n});\n\npm.test(\"Response with correct message\",function(){\n    const responseBody = pm.response.json();\n    pm.expect(responseBody.message).to.have.eql(\"The request contains invalid data.\")\n})\n\npm.test(\"Response with correct details\", function(){\n    const responseBody = pm.response.json();\n    pm.expect(responseBody.details).to.eql([\"email is required\"]);\n});\n\npm.test(\"Response with correct code\", function(){\n    const responseBody = pm.response.json();\n    pm.expect(responseBody.code).to.eql(\"INVALID_REQUEST\");\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"password\": \"Password@123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/auth/login",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-05 - Missing password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\n    pm.response.to.have.status(400);\n});\n\npm.test(\"Response with correct message\",function(){\n    const responseBody = pm.response.json();\n    pm.expect(responseBody.message).to.have.eql(\"The request contains invalid data.\")\n})\n\npm.test(\"Response with correct details\", function(){\n    const responseBody = pm.response.json();\n    pm.expect(responseBody.details).to.eql([\"password is required\"]);\n});\n\npm.test(\"Response with correct code\", function(){\n    const responseBody = pm.response.json();\n    pm.expect(responseBody.code).to.eql(\"INVALID_REQUEST\");\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"sagar@example.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/auth/login",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "02 - Products",
+      "item": [
+        {
+          "name": "TC-06 - Get All Products",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Response contains product data\", function () {\n    const responseBody = pm.response.json();\n\n    pm.expect(responseBody).to.have.property(\"data\");\n    pm.expect(responseBody.data).to.be.an(\"array\");\n});\n\npm.test(\"Pagination information is present\", function () {\n    const responseBody = pm.response.json();\n\n    pm.expect(responseBody.page).to.eql(1);\n    pm.expect(responseBody.limit).to.eql(10);\n});\n\npm.test(\"Total product count is valid\", function () {\n    const responseBody = pm.response.json();\n\n    pm.expect(responseBody.total).to.be.a(\"number\");\n    pm.expect(responseBody.total).to.be.at.least(responseBody.data.length);\n});\n\nconst productListSchema = {\n    type: \"object\",\n    required: [\"data\", \"page\", \"limit\", \"total\"],\n    properties: {\n        data: {\n            type: \"array\",\n            items: {\n                type: \"object\",\n                required: [\"id\", \"name\", \"category\", \"price\", \"stock\"],\n                properties: {\n                    id: { type: \"integer\" },\n                    name: { type: \"string\" },\n                    category: { type: \"string\" },\n                    price: { type: \"number\" },\n                    stock: { type: \"integer\" }\n                }\n            }\n        },\n        page: { type: \"integer\" },\n        limit: { type: \"integer\" },\n        total: { type: \"integer\" }\n    }\n};\n\npm.test(\"Response matches ProductListResponse schema\", function () {\n    pm.response.to.have.jsonSchema(productListSchema);\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/products",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-07 - Get All Products by category",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"All returned products belong to electronics category\", function () {\n    const responseBody = pm.response.json();\n\n    responseBody.data.forEach(product => {\n        pm.expect(product.category).to.eql(\"electronics\");\n    });\n});\n\npm.test(\"Filtered product count is valid\", function () {\n    const responseBody = pm.response.json();\n\n    pm.expect(responseBody.total).to.be.a(\"number\");\n    pm.expect(responseBody.total).to.be.at.least(responseBody.data.length);\n});\n\npm.test(\"Expected electronics products are returned\", function () {\n    const responseBody = pm.response.json();\n\n    const productIds = responseBody.data.map(product => product.id);\n\n    pm.expect(productIds).to.include.members([1001, 1002, 1005]);\n});\n\nconst filteredProductsSchema = {\n    type: \"object\",\n    required: [\"data\", \"page\", \"limit\", \"total\"],\n    properties: {\n        data: {\n            type: \"array\",\n            items: {\n                type: \"object\",\n                required: [\"id\", \"name\", \"category\", \"price\", \"stock\"],\n                properties: {\n                    id: { type: \"integer\" },\n                    name: { type: \"string\" },\n                    category: { type: \"string\" },\n                    price: { type: \"number\" },\n                    stock: { type: \"integer\" }\n                }\n            }\n        },\n        page: { type: \"integer\" },\n        limit: { type: \"integer\" },\n        total: { type: \"integer\" }\n    }\n};\n\npm.test(\"Response matches filtered product schema\", function () {\n    pm.response.to.have.jsonSchema(filteredProductsSchema);\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/products?category=electronics",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "electronics"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-08 - Get All Products by limit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Page number is correct\", function () {\n    const responseBody = pm.response.json();\n\n    pm.expect(responseBody.page)\n        .to.eql(1);\n});\n\npm.test(\"Page limit is correct\", function () {\n    const responseBody = pm.response.json();\n\n    pm.expect(responseBody.limit).to.eql(2);\n});\n\npm.test(\"Correct number of products returned\", function () {\n    const responseBody = pm.response.json();\n\n    pm.expect(responseBody.data).to.have.lengthOf(2);\n});\n\npm.test(\"Total product count is valid\", function () {\n    const responseBody = pm.response.json();\n\n    pm.expect(responseBody.total).to.be.a(\"number\");\n    pm.expect(responseBody.total).to.be.at.least(responseBody.data.length);\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/products?page=1&limit=2",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-09 - Get All Products by product ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\n\npm.test(\"Product id is correct\", function (){\n    const responseBody = pm.response.json();\n    pm.expect(responseBody.id).to.eql(1001)\n})\n\npm.test(\"Product name is correct\", function (){\n    const responseBody = pm.response.json();\n    pm.expect(responseBody.name).to.eql('Wireless Headphones');\n})\n\npm.test(\"Product category is correct\", function (){\n    const responseBody = pm.response.json();\n    pm.expect(responseBody.category).to.eql('electronics');\n})\npm.test(\"Product price is correct\", function (){\n    const responseBody = pm.response.json();\n    pm.expect(responseBody.price).to.eql(2499.99);\n})\nconst productSchema = {\n    type: \"object\",\n    required: [\"id\", \"name\", \"category\", \"price\", \"stock\"],\n    properties: {\n        id: { type: \"integer\" },\n        name: { type: \"string\" },\n        category: { type: \"string\" },\n        price: { type: \"number\" },\n        stock: { type: \"integer\" }\n    }\n};\n\npm.test(\"Response matches Product schema\", function () {\n    pm.response.to.have.jsonSchema(productSchema);\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/products/1001",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "products",
+                "1001"
+              ],
+              "query": [
+                {
+                  "key": "",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-10 - Create products",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const productResponse = pm.response.json();\n\npm.test(\"Status code is 201\", function () {\n    pm.response.to.have.status(201);\n});\n\npm.test(\"Created product has an ID\", function () {\n    pm.expect(productResponse.id).to.exist;\n});\n\npm.test(\"Product name is correct\", function () {\n    pm.expect(productResponse.name).to.eql(\"USB-C Hub\");\n});\n\npm.test(\"Product category is correct\", function () {\n    pm.expect(productResponse.category).to.eql(\"electronics\");\n});\n\npm.test(\"Product price is correct\", function () {\n    pm.expect(productResponse.price).to.eql(1499.99);\n});\n\npm.test(\"Product stock is correct\", function () {\n    pm.expect(productResponse.stock).to.eql(20);\n});\n\nconst createdProductSchema = {\n    type: \"object\",\n    required: [\"id\", \"name\", \"category\", \"price\", \"stock\"],\n    properties: {\n        id: { type: \"integer\" },\n        name: { type: \"string\" },\n        category: { type: \"string\" },\n        price: { type: \"number\" },\n        stock: { type: \"integer\" }\n    }\n};\n\npm.test(\"Response matches Product schema\", function () {\n    pm.response.to.have.jsonSchema(createdProductSchema);\n});\n\npm.environment.set(\"productId\", productResponse.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"USB-C Hub\",\r\n    \"category\": \"electronics\",\r\n    \"price\": 1499.99,\r\n    \"stock\": 20\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/products",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "03 - Orders",
+      "item": [
+        {
+          "name": "TC-11 Create Order - Valid",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const orderResponse = pm.response.json();\r\n\r\npm.test(\"Status code is 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\npm.test(\"Order ID is generated\", function () {\r\n    pm.expect(orderResponse.id).to.exist;\r\n});\r\n\r\npm.test(\"Order status is CREATED\", function () {\r\n    pm.expect(orderResponse.status).to.eql(\"CREATED\");\r\n});\r\n\r\npm.test(\"Order contains items\", function () {\r\n    pm.expect(orderResponse.items).to.be.an(\"array\");\r\n    pm.expect(orderResponse.items.length).to.be.greaterThan(0);\r\n});\r\n\r\npm.test(\"Product ID matches requested product\", function () {\r\n    pm.expect(orderResponse.items[0].productId)\r\n        .to.eql(Number(pm.environment.get(\"productId\")));\r\n});\r\n\r\npm.test(\"Quantity is correct\", function () {\r\n    pm.expect(orderResponse.items[0].quantity).to.eql(2);\r\n});\r\n\r\npm.test(\"Unit price is returned\", function () {\r\n    pm.expect(orderResponse.items[0].unitPrice)\r\n        .to.be.a(\"number\")\r\n        .and.to.be.greaterThan(0);\r\n});\r\n\r\npm.test(\"Total amount is calculated correctly\", function () {\r\n    const item = orderResponse.items[0];\r\n    const expectedTotal = item.quantity * item.unitPrice;\r\n\r\n    pm.expect(orderResponse.totalAmount).to.eql(expectedTotal);\r\n});\r\n\r\npm.environment.set(\"orderId\", orderResponse.id);\r\n\r\nconst orderSchema = {\r\n    type: \"object\",\r\n    required: [\r\n        \"id\",\r\n        \"status\",\r\n        \"items\",\r\n        \"totalAmount\",\r\n        \"shippingAddress\"\r\n    ],\r\n    properties: {\r\n        id: { type: \"integer\" },\r\n        status: {\r\n            type: \"string\",\r\n            enum: [\r\n                \"CREATED\",\r\n                \"CONFIRMED\",\r\n                \"SHIPPED\",\r\n                \"DELIVERED\",\r\n                \"CANCELLED\"\r\n            ]\r\n        },\r\n        items: {\r\n            type: \"array\",\r\n            items: {\r\n                type: \"object\",\r\n                required: [\"productId\", \"quantity\", \"unitPrice\"],\r\n                properties: {\r\n                    productId: { type: \"integer\" },\r\n                    quantity: { type: \"integer\" },\r\n                    unitPrice: { type: \"number\" }\r\n                }\r\n            }\r\n        },\r\n        totalAmount: { type: \"number\" },\r\n        shippingAddress: {\r\n            type: \"object\",\r\n            required: [\r\n                \"street\",\r\n                \"city\",\r\n                \"state\",\r\n                \"postalCode\",\r\n                \"country\"\r\n            ],\r\n            properties: {\r\n                street: { type: \"string\" },\r\n                city: { type: \"string\" },\r\n                state: { type: \"string\" },\r\n                postalCode: { type: \"string\" },\r\n                country: { type: \"string\" }\r\n            }\r\n        }\r\n    }\r\n};\r\n\r\npm.test(\"Response matches Order schema\", function () {\r\n    pm.response.to.have.jsonSchema(orderSchema);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"items\": [\r\n        {\r\n            \"productId\": {{productId}},\r\n            \"quantity\": 2\r\n        }\r\n    ],\r\n    \"shippingAddress\": {\r\n        \"street\": \"25 Business Park\",\r\n        \"city\": \"Mumbai\",\r\n        \"state\": \"Maharashtra\",\r\n        \"postalCode\": \"400002\",\r\n        \"country\": \"India\"\r\n    }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/orders",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-12 Get All Orders",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Response is an array\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody).to.be.an(\"array\");\r\n});\r\n\r\npm.test(\"Orders are returned\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.length).to.be.greaterThan(0);\r\n});\r\n\r\npm.test(\"Each order contains required fields\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    responseBody.forEach(order => {\r\n        pm.expect(order).to.have.property(\"id\");\r\n        pm.expect(order).to.have.property(\"status\");\r\n        pm.expect(order).to.have.property(\"items\");\r\n        pm.expect(order).to.have.property(\"totalAmount\");\r\n        pm.expect(order).to.have.property(\"shippingAddress\");\r\n    });\r\n});\r\n\r\n\r\n\r\nconst ordersSchema = {\r\n    type: \"array\",\r\n    items: {\r\n        type: \"object\",\r\n        required: [\r\n            \"id\",\r\n            \"status\",\r\n            \"items\",\r\n            \"totalAmount\",\r\n            \"shippingAddress\"\r\n        ],\r\n        properties: {\r\n            id: { type: \"integer\" },\r\n            status: {\r\n                type: \"string\",\r\n                enum: [\r\n                    \"CREATED\",\r\n                    \"CONFIRMED\",\r\n                    \"SHIPPED\",\r\n                    \"DELIVERED\",\r\n                    \"CANCELLED\"\r\n                ]\r\n            },\r\n            items: {\r\n                type: \"array\",\r\n                items: {\r\n                    type: \"object\",\r\n                    required: [\"productId\", \"quantity\", \"unitPrice\"],\r\n                    properties: {\r\n                        productId: { type: \"integer\" },\r\n                        quantity: { type: \"integer\" },\r\n                        unitPrice: { type: \"number\" }\r\n                    }\r\n                }\r\n            },\r\n            totalAmount: { type: \"number\" },\r\n            shippingAddress: {\r\n                type: \"object\",\r\n                required: [\r\n                    \"street\",\r\n                    \"city\",\r\n                    \"state\",\r\n                    \"postalCode\",\r\n                    \"country\"\r\n                ],\r\n                properties: {\r\n                    street: { type: \"string\" },\r\n                    city: { type: \"string\" },\r\n                    state: { type: \"string\" },\r\n                    postalCode: { type: \"string\" },\r\n                    country: { type: \"string\" }\r\n                }\r\n            }\r\n        }\r\n    }\r\n};\r\n\r\npm.test(\"Response matches Orders schema\", function () {\r\n    pm.response.to.have.jsonSchema(ordersSchema);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/orders",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "orders"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "CREATED",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-13 Get Order by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Returned order ID matches requested order ID\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.id.toString())\r\n        .to.eql(pm.environment.get(\"orderId\").toString());\r\n});\r\n\r\npm.test(\"Order status is valid\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    const validStatuses = [\r\n        \"CREATED\",\r\n        \"CONFIRMED\",\r\n        \"SHIPPED\",\r\n        \"DELIVERED\",\r\n        \"CANCELLED\"\r\n    ];\r\n\r\n    pm.expect(validStatuses).to.include(responseBody.status);\r\n});\r\n\r\npm.test(\"Order contains items\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.items).to.be.an(\"array\");\r\n    pm.expect(responseBody.items.length).to.be.greaterThan(0);\r\n});\r\n\r\npm.test(\"Order contains shipping address\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.shippingAddress).to.have.property(\"street\");\r\n    pm.expect(responseBody.shippingAddress).to.have.property(\"city\");\r\n    pm.expect(responseBody.shippingAddress).to.have.property(\"state\");\r\n    pm.expect(responseBody.shippingAddress).to.have.property(\"postalCode\");\r\n    pm.expect(responseBody.shippingAddress).to.have.property(\"country\");\r\n});\r\n\r\nconst orderByIdSchema = {\r\n    type: \"object\",\r\n    required: [\r\n        \"id\",\r\n        \"status\",\r\n        \"items\",\r\n        \"totalAmount\",\r\n        \"shippingAddress\"\r\n    ],\r\n    properties: {\r\n        id: { type: \"integer\" },\r\n        status: {\r\n            type: \"string\",\r\n            enum: [\r\n                \"CREATED\",\r\n                \"CONFIRMED\",\r\n                \"SHIPPED\",\r\n                \"DELIVERED\",\r\n                \"CANCELLED\"\r\n            ]\r\n        },\r\n        items: {\r\n            type: \"array\",\r\n            items: {\r\n                type: \"object\",\r\n                required: [\"productId\", \"quantity\", \"unitPrice\"],\r\n                properties: {\r\n                    productId: { type: \"integer\" },\r\n                    quantity: { type: \"integer\" },\r\n                    unitPrice: { type: \"number\" }\r\n                }\r\n            }\r\n        },\r\n        totalAmount: { type: \"number\" },\r\n        shippingAddress: {\r\n            type: \"object\",\r\n            required: [\r\n                \"street\",\r\n                \"city\",\r\n                \"state\",\r\n                \"postalCode\",\r\n                \"country\"\r\n            ],\r\n            properties: {\r\n                street: { type: \"string\" },\r\n                city: { type: \"string\" },\r\n                state: { type: \"string\" },\r\n                postalCode: { type: \"string\" },\r\n                country: { type: \"string\" }\r\n            }\r\n        }\r\n    }\r\n};\r\n\r\npm.test(\"Response matches Order schema\", function () {\r\n    pm.response.to.have.jsonSchema(orderByIdSchema);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/orders/{{orderId}}",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "orders",
+                "{{orderId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-14 Cancel Order",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Returned order ID matches requested order\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.id.toString())\r\n        .to.eql(pm.environment.get(\"orderId\").toString());\r\n});\r\n\r\npm.test(\"Order status is CANCELLED\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.status).to.eql(\"CANCELLED\");\r\n});\r\n\r\npm.test(\"Cancelled order contains items\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.items).to.be.an(\"array\");\r\n});\r\n\r\npm.test(\"Cancelled order contains total amount\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.totalAmount).to.exist;\r\n});\r\n\r\nconst cancelledOrderSchema = {\r\n    type: \"object\",\r\n    required: [\r\n        \"id\",\r\n        \"status\",\r\n        \"items\",\r\n        \"totalAmount\",\r\n        \"shippingAddress\"\r\n    ],\r\n    properties: {\r\n        id: { type: \"integer\" },\r\n        status: {\r\n            type: \"string\",\r\n            enum: [\r\n                \"CREATED\",\r\n                \"CONFIRMED\",\r\n                \"SHIPPED\",\r\n                \"DELIVERED\",\r\n                \"CANCELLED\"\r\n            ]\r\n        },\r\n        items: {\r\n            type: \"array\",\r\n            items: {\r\n                type: \"object\",\r\n                required: [\"productId\", \"quantity\", \"unitPrice\"],\r\n                properties: {\r\n                    productId: { type: \"integer\" },\r\n                    quantity: { type: \"integer\" },\r\n                    unitPrice: { type: \"number\" }\r\n                }\r\n            }\r\n        },\r\n        totalAmount: { type: \"number\" },\r\n        shippingAddress: {\r\n            type: \"object\",\r\n            required: [\r\n                \"street\",\r\n                \"city\",\r\n                \"state\",\r\n                \"postalCode\",\r\n                \"country\"\r\n            ],\r\n            properties: {\r\n                street: { type: \"string\" },\r\n                city: { type: \"string\" },\r\n                state: { type: \"string\" },\r\n                postalCode: { type: \"string\" },\r\n                country: { type: \"string\" }\r\n            }\r\n        }\r\n    }\r\n};\r\n\r\npm.test(\"Response matches Order schema\", function () {\r\n    pm.response.to.have.jsonSchema(cancelledOrderSchema);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/orders/{{orderId}}",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "orders",
+                "{{orderId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "04 - Negative Scenarios",
+      "item": [
+        {
+          "name": "TC-15 Missing Authentication - Create Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {\r\n    pm.response.to.have.status(401);\r\n});\r\n\r\npm.test(\"Error code is UNAUTHORIZED\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.code).to.eql(\"UNAUTHORIZED\");\r\n});\r\n\r\npm.test(\"Authentication error message is correct\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.message)\r\n        .to.eql(\"Authentication is required.\");\r\n});\r\n\r\npm.test(\"Error details are present\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.details).to.be.an(\"array\");\r\n    pm.expect(responseBody.details)\r\n        .to.include(\"Authorization header is required\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Negative Test Product\",\r\n    \"category\": \"electronics\",\r\n    \"price\": 999.99,\r\n    \"stock\": 10\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/products",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-16: Invalid Authentication Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {\r\n    pm.response.to.have.status(401);\r\n});\r\n\r\npm.test(\"Error code is UNAUTHORIZED\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.code).to.eql(\"UNAUTHORIZED\");\r\n});\r\n\r\npm.test(\"Authentication error message is correct\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.message)\r\n        .to.eql(\"Authentication is required.\");\r\n});\r\n\r\npm.test(\"Invalid token error is returned\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.details)\r\n        .to.include(\"Invalid or expired token\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "invalid-token-123",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Invalid Token Test Product\",\r\n    \"category\": \"electronics\",\r\n    \"price\": 999.99,\r\n    \"stock\": 10\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/products",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-17: Product Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Error code is NOT_FOUND\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.code).to.eql(\"NOT_FOUND\");\r\n});\r\n\r\npm.test(\"Product not found message is correct\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.message)\r\n        .to.eql(\"Product not found.\");\r\n});\r\n\r\npm.test(\"Product not found details are present\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.details).to.be.an(\"array\");\r\n    pm.expect(responseBody.details[0])\r\n        .to.include(\"Product does not exist\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/products/9999",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "products",
+                "9999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-18: Order Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Error code is NOT_FOUND\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.code).to.eql(\"NOT_FOUND\");\r\n});\r\n\r\npm.test(\"Order not found message is correct\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.message)\r\n        .to.eql(\"Order not found.\");\r\n});\r\n\r\npm.test(\"Order not found details are present\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.details).to.be.an(\"array\");\r\n    pm.expect(responseBody.details[0])\r\n        .to.eql(\"Order does not exist\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/orders/ 99999",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "orders",
+                " 99999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-19: Create Product — Missing Required Field",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error code is INVALID_REQUEST\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.code).to.eql(\"INVALID_REQUEST\");\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.message)\r\n        .to.eql(\"The request contains invalid data.\");\r\n});\r\n\r\npm.test(\"Validation error details are present\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.details).to.be.an(\"array\");\r\n    pm.expect(responseBody.details)\r\n        .to.include(\"name is required\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"category\": \"electronics\",\r\n    \"price\": 999.99,\r\n    \"stock\": 10\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/products",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-20 — Create Product: Invalid Price",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error code is INVALID_REQUEST\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.code).to.eql(\"INVALID_REQUEST\");\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.message)\r\n        .to.eql(\"The request contains invalid data.\");\r\n});\r\n\r\npm.test(\"Invalid price validation is returned\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.details)\r\n        .to.include(\"price must be a number greater than or equal to 0\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Invalid Price Product\",\r\n    \"category\": \"electronics\",\r\n    \"price\": -100,\r\n    \"stock\": 10\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/products",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-21 — Create Product: Invalid Stock",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error code is INVALID_REQUEST\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.code).to.eql(\"INVALID_REQUEST\");\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.message)\r\n        .to.eql(\"The request contains invalid data.\");\r\n});\r\n\r\npm.test(\"Invalid stock validation is returned\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.details)\r\n        .to.include(\"stock must be an integer greater than or equal to 0\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Invalid Stock Product\",\r\n    \"category\": \"electronics\",\r\n    \"price\": 999.99,\r\n    \"stock\": -10\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/products",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-22 — Create Product: Missing Price",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error code is INVALID_REQUEST\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.code).to.eql(\"INVALID_REQUEST\");\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.message)\r\n        .to.eql(\"The request contains invalid data.\");\r\n});\r\n\r\npm.test(\"Missing price validation is returned\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.details)\r\n        .to.include(\"price is required\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Missing Price Product\",\r\n    \"category\": \"electronics\",\r\n    \"stock\": 10\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/products",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-23 — Create Product: Missing Stock",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error code is INVALID_REQUEST\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.code).to.eql(\"INVALID_REQUEST\");\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.message)\r\n        .to.eql(\"The request contains invalid data.\");\r\n});\r\n\r\npm.test(\"Missing stock validation is returned\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.details)\r\n        .to.include(\"stock is required\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Missing Stock Product\",\r\n    \"category\": \"electronics\",\r\n    \"price\": 999.99\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/products",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-24 — Create Order: Missing Items",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error code is INVALID_REQUEST\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.code).to.eql(\"INVALID_REQUEST\");\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.message)\r\n        .to.eql(\"The request contains invalid data.\");\r\n});\r\n\r\npm.test(\"Missing items validation is returned\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.details)\r\n        .to.include(\"items must contain at least one product\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"shippingAddress\": {\r\n        \"street\": \"25 Business Park\",\r\n        \"city\": \"Mumbai\",\r\n        \"state\": \"Maharashtra\",\r\n        \"postalCode\": \"400002\",\r\n        \"country\": \"India\"\r\n    }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/orders",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-25 — Create Order: Missing Shipping Address",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error code is INVALID_REQUEST\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.code).to.eql(\"INVALID_REQUEST\");\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.message)\r\n        .to.eql(\"The request contains invalid data.\");\r\n});\r\n\r\npm.test(\"Shipping address validation errors are returned\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.details).to.be.an(\"array\");\r\n\r\n    pm.expect(responseBody.details)\r\n        .to.include(\"street is required\");\r\n\r\n    pm.expect(responseBody.details)\r\n        .to.include(\"city is required\");\r\n\r\n    pm.expect(responseBody.details)\r\n        .to.include(\"state is required\");\r\n\r\n    pm.expect(responseBody.details)\r\n        .to.include(\"postalCode is required\");\r\n\r\n    pm.expect(responseBody.details)\r\n        .to.include(\"country is required\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"items\": [\r\n        {\r\n            \"productId\": {{productId}},\r\n            \"quantity\": 1\r\n        }\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/orders",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-27 — Create Order: Insufficient Stock",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error code is INVALID_REQUEST\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.code).to.eql(\"INVALID_REQUEST\");\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.message)\r\n        .to.eql(\"The request contains invalid data.\");\r\n});\r\n\r\npm.test(\"Insufficient stock validation is returned\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.details)\r\n        .to.include(\"Insufficient stock for product 1001\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"items\": [\r\n        {\r\n            \"productId\": 1001,\r\n            \"quantity\": 99999\r\n        }\r\n    ],\r\n    \"shippingAddress\": {\r\n        \"street\": \"25 Business Park\",\r\n        \"city\": \"Mumbai\",\r\n        \"state\": \"Maharashtra\",\r\n        \"postalCode\": \"400002\",\r\n        \"country\": \"India\"\r\n    }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/orders",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-26 — Create Order: Invalid Quantity",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error code is INVALID_REQUEST\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.code).to.eql(\"INVALID_REQUEST\");\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.message)\r\n        .to.eql(\"The request contains invalid data.\");\r\n});\r\n\r\npm.test(\"Invalid quantity validation is returned\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.details)\r\n        .to.include(\"quantity must be a positive integer\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"items\": [\r\n        {\r\n            \"productId\": {{productId}},\r\n            \"quantity\": 0\r\n        }\r\n    ],\r\n    \"shippingAddress\": {\r\n        \"street\": \"25 Business Park\",\r\n        \"city\": \"Mumbai\",\r\n        \"state\": \"Maharashtra\",\r\n        \"postalCode\": \"400002\",\r\n        \"country\": \"India\"\r\n    }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/orders",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-28 — Cancel Already Cancelled Order",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error code is INVALID_REQUEST\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.code).to.eql(\"INVALID_REQUEST\");\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.message)\r\n        .to.eql(\"The request contains invalid data.\");\r\n});\r\n\r\npm.test(\"Cancelled order validation is returned\", function () {\r\n    const responseBody = pm.response.json();\r\n\r\n    pm.expect(responseBody.details)\r\n        .to.include(\"Order cannot be cancelled in its current state\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/orders/{{orderId}}",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "orders",
+                "{{orderId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
