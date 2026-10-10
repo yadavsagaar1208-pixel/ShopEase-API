@@ -3,14 +3,21 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+
+"scripts": {
+  "start": "node server.js",
+  "test:api": "newman run \"./postman/ShopEase E-Commerce API - QA.postman_collection.json\" -e \"./postman/ShopEase - Local.postman_environment.json\"",
+  "test:api:report": "newman run \"./postman/ShopEase E-Commerce API - QA.postman_collection.json\" -e \"./postman/ShopEase - Local.postman_environment.json\" -r htmlextra --reporter-htmlextra-export \"./reports/ShopEase-Newman-Report.html\""
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
     "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "newman": "^6.2.3",
+    "newman-reporter-htmlextra": "^1.23.1"
   }
 }
